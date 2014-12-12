@@ -1,0 +1,119 @@
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/svn/agent/!svn/ver/2/idc/Comm/PHPExcel
+END
+WorksheetIterator.php
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/agent/!svn/ver/2/idc/Comm/PHPExcel/WorksheetIterator.php
+END
+RichText.php
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/agent/!svn/ver/2/idc/Comm/PHPExcel/RichText.php
+END
+HashTable.php
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/agent/!svn/ver/2/idc/Comm/PHPExcel/HashTable.php
+END
+DocumentProperties.php
+K 25
+svn:wc:ra_dav:version-url
+V 62
+/svn/agent/!svn/ver/2/idc/Comm/PHPExcel/DocumentProperties.php
+END
+ReferenceHelper.php
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/agent/!svn/ver/2/idc/Comm/PHPExcel/ReferenceHelper.php
+END
+Exception.php
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/agent/!svn/ver/2/idc/Comm/PHPExcel/Exception.php
+END
+Calculation.php
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/agent/!svn/ver/2/idc/Comm/PHPExcel/Calculation.php
+END
+IOFactory.php
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/agent/!svn/ver/2/idc/Comm/PHPExcel/IOFactory.php
+END
+Autoloader.php
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/agent/!svn/ver/2/idc/Comm/PHPExcel/Autoloader.php
+END
+Settings.php
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/svn/agent/!svn/ver/2/idc/Comm/PHPExcel/Settings.php
+END
+Style.php
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/agent/!svn/ver/2/idc/Comm/PHPExcel/Style.php
+END
+NamedRange.php
+K 25
+svn:wc:ra_dav:version-url
+V 54
+/svn/agent/!svn/ver/2/idc/Comm/PHPExcel/NamedRange.php
+END
+Chart.php
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/agent/!svn/ver/2/idc/Comm/PHPExcel/Chart.php
+END
+Comment.php
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/agent/!svn/ver/2/idc/Comm/PHPExcel/Comment.php
+END
+DocumentSecurity.php
+K 25
+svn:wc:ra_dav:version-url
+V 60
+/svn/agent/!svn/ver/2/idc/Comm/PHPExcel/DocumentSecurity.php
+END
+CachedObjectStorageFactory.php
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/agent/!svn/ver/2/idc/Comm/PHPExcel/CachedObjectStorageFactory.php
+END
+Worksheet.php
+K 25
+svn:wc:ra_dav:version-url
+V 53
+/svn/agent/!svn/ver/2/idc/Comm/PHPExcel/Worksheet.php
+END
+IComparable.php
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/agent/!svn/ver/2/idc/Comm/PHPExcel/IComparable.php
+END
+Cell.php
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/agent/!svn/ver/2/idc/Comm/PHPExcel/Cell.php
+END
