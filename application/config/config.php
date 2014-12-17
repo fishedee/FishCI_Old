@@ -364,5 +364,15 @@ $config['upload_path'] = dirname(__FILE__).'/../../../data/upload';
 $config['upload_max_size'] = 1024*1024*6;
 $config['upload_url'] = '/data/upload/';
 
+/*
+* Email≈‰÷√
+*/
+$config['email_host'] = 'smtp.163.com';
+$config['email_port'] = 25;
+$config['email_user'] = '18503082346@163.com';
+$config['email_user_name'] = 'fish';
+$config['email_pass'] = '394246577';
+$config['email_async_url'] = '/email/asyncSendReceiver';
+
 /* End of file config.php */
 /* Location: ./application/config/config.php */
