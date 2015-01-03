@@ -374,5 +374,15 @@ $config['email_user_name'] = 'fish';
 $config['email_pass'] = '394246577';
 $config['email_async_url'] = '/email/asyncSendReceiver';
 
+/*
+* TimerÅäÖÃ
+*/
+$config['timer'] = array(
+	array(
+		'period'=>60,
+		'task'=>'test',
+	)
+);
+
 /* End of file config.php */
 /* Location: ./application/config/config.php */

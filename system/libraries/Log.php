@@ -96,7 +96,7 @@ class CI_Log {
 			return FALSE;
 		}
 
-		$message .= $level.' '.(($level == 'INFO') ? ' -' : '-').' '.date($this->_date_fmt). ' --> '.$msg."\n";
+		$message .= $level.' '.(($level == 'INFO') ? ' -' : '-').' '.date($this->_date_fmt).' '.$_SERVER['REMOTE_ADDR'].' '.$_SERVER['REQUEST_URI'].' --> '.$msg."\n";
 
 		flock($fp, LOCK_EX);
 		fwrite($fp, $message);

@@ -8,7 +8,7 @@ class CI_MyEmail{
 	private function utf8Encode( $str ){
 		return "=?utf-8?B?".base64_encode($str)."?=";
 	}
-	public function send( $toUser  , $toUserName, $title,$message ){
+	public function send( $address, $title,$message ){
 		$mail    = new PHPMailer();
 		$mail->IsSMTP();
 		$mail->SMTPAuth   = true;
@@ -27,10 +27,12 @@ class CI_MyEmail{
 			$this->CI->config->item('email_user'), 
 			$this->utf8Encode($this->CI->config->item('email_user_name'))
 		);
-		$mail->AddAddress(
-			$toUser, 
-			$this->utf8Encode($toUserName)
-		);
+		foreach( $address as $singleAddress ){
+			$mail->AddAddress(
+				$singleAddress['user'], 
+				$this->utf8Encode($singleAddress['name'])
+			);
+		}
 		$mail->Subject    = $this->utf8Encode($title);
 		$mail->MsgHTML($message);
 		$result = $mail->Send();
@@ -39,8 +41,7 @@ class CI_MyEmail{
 				'code'=>1,
 				'msg'=>$mail->ErrorInfo,
 				'data'=>array(
-					'toUser'=>$toUser,
-					'toUserName'=>$toUserName,
+					'address'=>$address,
 					'title'=>$title,
 					'message'=>$message,
 				)
@@ -53,28 +54,30 @@ class CI_MyEmail{
 			);
 		}
 	}
-	public function asyncSend($toUser,$toUserName,$title,$message){
+	
+	public function asyncSend($address,$title,$message){
 		$this->CI->load->library('http','','http');
-		$result = $this->CI->http->async(array(
+		$result = $this->CI->http->localAjax(array(
 			'url'=>$this->CI->config->item('email_async_url'),
+			'type'=>'post',
+			'async'=>true,
 			'data'=>array(
-				'user'=>$toUser,
-				'name'=>$toUserName,
+				'address'=>$address,
 				'title'=>$title,
 				'message'=>$message
-			)
+			),
 		));
 		return $result;
 	}
+	
 	public function asyncSendReceiver(){
 		$this->CI->load->library('argv','','argv');
-		$result = $this->CI->argv->postRequireInput(array('user','name','title','message'));
+		$result = $this->CI->argv->postRequireInput(array('address','title','message'));
 		if( $result["code"] != 0 ){
 			return $result;
 		}
 		return $this->send(
-			$result['data']['user'],
-			$result['data']['name'],
+			$result['data']['address'],
 			$result['data']['title'],
 			$result['data']['message']
 		);
