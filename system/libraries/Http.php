@@ -100,7 +100,7 @@ class CI_Http{
 		$data = curl_exec($curl);
 		$headerData = curl_getinfo($curl);
 		curl_close($curl);
-		if( $isAsync == false && $data == false ){
+		if( $isAsync == false && $data === false ){
 			return array(
 				'code'=>1,
 				'msg'=>'连接服务器失败 '.$url,
