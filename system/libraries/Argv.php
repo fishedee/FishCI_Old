@@ -20,6 +20,75 @@ class CI_Argv{
 			$s) == 1;
 	}
 	
+	public function checkGet($input){
+		foreach( $input as $key=>$singleInput ){
+			$input[$key][1] = $input[$key][1].'|get';
+		}
+		return $this->check($input);
+	}
+	public function checkPost($input){
+		foreach( $input as $key=>$singleInput ){
+			$input[$key][1] = $input[$key][1].'|post';
+		}
+		return $this->check($input);
+	}
+	public function check( $input ){
+		$result = array();
+		foreach( $input as $singleInput ){
+			$fieldName = $singleInput[0];
+			$fieldRule = $singleInput[1];
+			unset($fieldDefaultValue);
+			if( isset($singleInput[2]))
+				$fieldDefaultValue = $singleInput[2];
+			$fieldRule = explode('|',$fieldRule);
+		
+			//获取字段数据
+			$method = 'get';
+			if( in_array('get',$fieldRule) )
+				$method = 'get';
+			if( in_array('post',$fieldRule) )
+				$method = 'post';
+			$isXssFilt = true;
+			if( in_array('noxss',$fieldRule) )
+				$isXssFilt = false;
+			$isRequire = true;
+			if( in_array('option',$fieldRule))
+				$isRequire = false;
+			
+			$fieldValue = $this->CI->input->$method($fieldName,$isXssFilt);
+			if( $fieldValue === false ){
+				if( $isRequire == false ){
+					if( isset($fieldDefaultValue))
+						$fieldValue = $fieldDefaultValue;
+					else
+						continue;
+				}else{
+					return array(
+						"code"=>1,
+						"msg"=>"请输入".$method."参数".$fieldName,
+						"data"=>""
+					);
+				}
+			}			
+			
+			//开始校验
+			if( in_array('url',$fieldRule) && $this->isUrl($fieldValue) == false )
+				return array(
+					"code"=>1,
+					"msg"=>"请输入url参数".$fieldName,
+					"data"=>""
+				);
+			
+			//记录返回数据
+			$result[$fieldName] = $fieldValue;
+		}
+		return array(
+			'code'=>0,
+			'msg'=>'',
+			'data'=>$result
+		);	
+	}
+	
 	public function postRequireInput( $input ,$xssFilt = true )
 	{
 		$result = array();
