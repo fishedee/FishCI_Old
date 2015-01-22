@@ -63,30 +63,18 @@ class CI_Argv{
 					else
 						continue;
 				}else{
-					return array(
-						"code"=>1,
-						"msg"=>"请输入".$method."参数".$fieldName,
-						"data"=>""
-					);
+					throw new CI_MyException(1,"请输入".$method."参数".$fieldName);
 				}
 			}			
 			
 			//开始校验
 			if( in_array('url',$fieldRule) && $this->isUrl($fieldValue) == false )
-				return array(
-					"code"=>1,
-					"msg"=>"请输入url参数".$fieldName,
-					"data"=>""
-				);
+				throw new CI_MyException(1,"请输入url参数".$fieldName);
 			
 			//记录返回数据
 			$result[$fieldName] = $fieldValue;
 		}
-		return array(
-			'code'=>0,
-			'msg'=>'',
-			'data'=>$result
-		);	
+		return $result;
 	}
 	
 	public function postRequireInput( $input ,$xssFilt = true )

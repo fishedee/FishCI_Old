@@ -356,7 +356,25 @@
 
 		// Call the requested method.
 		// Any URI segments present (besides the class/function) will be passed to the method for convenience
-		call_user_func_array(array(&$CI, $method), array_slice($URI->rsegments, 2));
+		// fish begin 加入读取控制器的视图，自动输出
+		try{
+			$callResult = call_user_func_array(array(&$CI, $method), array_slice($URI->rsegments, 2));
+		}catch( Exception $e ){
+			$callResult = $e;
+		}
+		$callFunc  = new ReflectionMethod($CI,$method);
+		
+		$callFuncDoc   = $callFunc->getDocComment();
+		if( $callFuncDoc !== false ){
+			$flag  = preg_match_all('/@view(.*?)\n/',$callFuncDoc,$callFuncDoc);
+			$callFuncView   = trim($callFuncDoc[1][0]);
+			if( $callFuncView != ''){
+				$CI->load->view($callFuncView,array('data'=>$callResult));
+			}
+		}else{
+			log_message('debug','nothing doccomment found '.$class.','.$method);
+		}
+		// fish end
 	}
 
 
