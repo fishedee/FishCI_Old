@@ -15,30 +15,17 @@ class CI_FileUpload{
 		$option['allowed_types'] = $allowTypes;
 		
 		$result = $this->file($option);
-		if( $result['code'] != 0 )
-			return $result;
 			
-		return array(
-			'code'=>0,
-			'msg'=>'',
-			'data'=>$this->CI->config->item('upload_url').$result['data']['file_name']
-		);
+		return $this->CI->config->item('upload_url').$result['file_name'];
 	}
 	
 	//上传文件
 	public function file( $option ){
 		if( !isset($option['upload_path']))
-			return array(
-				'code'=>1,
-				'msg'=>'缺少上传保存路径',
-				'data'=>''
-			);
+			throw new CI_MyException(1,'缺少上传保存路径');
 		if( !isset($option['field']))
-			return array(
-				'code'=>1,
-				'msg'=>'缺少上传字段',
-				'data'=>''
-			);
+			throw new CI_MyException(1,'缺少上传字段');
+			
 		$config = array();
 		$config['upload_path'] = $option['upload_path'];
 		$config['encrypt_name'] = true;
@@ -49,44 +36,25 @@ class CI_FileUpload{
 			$config['max_size'] = $option['max_size']/1024;
 		$this->CI->load->library('upload', $config);
 		if( ! $this->CI->upload->do_upload($option['field'])){
-			return array(
-				'code' =>1,
-				'msg'=>$this->CI->upload->display_errors(),
-				'data'=>''
-			);
+			throw new CI_MyException(1,$this->CI->upload->display_errors());
 		}
 		
 		$data = $this->CI->upload->data();
-		return array(
-			'code'=>0,
-			'msg'=>'',
-			'data'=>$data,
-		);
+		return $data;
 	}
 	
 	private function imageBase64Upload( $option ){
 		//校验文件字段
 		if( !isset($option['upload_path']))
-			return array(
-				'code'=>1,
-				'msg'=>'缺少上传保存路径',
-				'data'=>''
-			);
+			throw new CI_MyException(1,'缺少上传保存路径');
 		if( isset($_POST[$option['field']]) == false )
-			return array(
-				'code'=>1,
-				'msg'=>'请选择文件上传',
-				'data'=>''
-			);
+			throw new CI_MyException(1,'请选择文件上传');
+
 		$data = base64_decode($_POST[$option['field']]);
 		
 		//校验文件大小
 		if( isset($option['max_size']) && $option['max_size'] < strlen($data))
-			return array(
-				'code'=>1,
-				'msg'=>'文件超过'.($option['max_size']/1024).'KB',
-				'data'=>''
-			);
+			throw new CI_MyException(1,'文件超过'.($option['max_size']/1024).'KB');
 			
 		//保存文件
 		$uniqueName = md5(uniqid());
@@ -125,24 +93,20 @@ class CI_FileUpload{
 		}
 		
 		return array(
-			'code'=>0,
-			'msg'=>'',
-			'data'=>array(
-				'file_name'=>$fileName,
-				'file_type'=>$fileType,
-				'file_path'=>$option['upload_path'],
-				'full_path'=>$fileAddress,
-				'raw_name'=>$uniqueName,
-				'orig_name'=>$fileName,
-				'client_name'=>$fileName,
-				'file_ext'=>$fileExt,
-				'file_size'=>strlen($data),
-				'is_image'=>$isImage,
-				'image_width'=>$imageWidth,
-				'image_height'=>$imageHeight,
-				'image_type'=>$imageFormat,
-				'image_size_str'=>$imageSizeStr,
-			)
+			'file_name'=>$fileName,
+			'file_type'=>$fileType,
+			'file_path'=>$option['upload_path'],
+			'full_path'=>$fileAddress,
+			'raw_name'=>$uniqueName,
+			'orig_name'=>$fileName,
+			'client_name'=>$fileName,
+			'file_ext'=>$fileExt,
+			'file_size'=>strlen($data),
+			'is_image'=>$isImage,
+			'image_width'=>$imageWidth,
+			'image_height'=>$imageHeight,
+			'image_type'=>$imageFormat,
+			'image_size_str'=>$imageSizeStr,
 		);
 	}
 	
@@ -155,40 +119,24 @@ class CI_FileUpload{
 		$option['field'] = $field;
 		
 		$result = $this->image($option);
-		if( $result['code'] != 0 )
-			return $result;
 			
-		return array(
-			'code'=>0,
-			'msg'=>'',
-			'data'=>$this->CI->config->item('upload_url').$result['data']['file_name']
-		);
+		return $this->CI->config->item('upload_url').$result['file_name'];
 	}
 	
 	//上传图片
 	public function image( $option ){
 		if( !isset($option['field']))
-			return array(
-				'code'=>1,
-				'msg'=>'缺少上传字段',
-				'data'=>''
-			);
+			throw new CI_MyException(1,'缺少上传字段');
+
 		$option['allowed_types'] = 'jpg|jpeg|gif|bmp|png|gif';
 		if( isset($_FILES[$option['field']]))
 			$result = $this->file( $option );
 		else
 			$result = $this->imageBase64Upload( $option );
 		
-		if( $result['code'] != 0 )
-			return $result;
-		
-		if( $result['data']['is_image'] != true ){
-			@unlink($result['data']['full_path']);
-			return array(
-				'code'=>1,
-				'msg'=>'上传的是非图片文件',
-				'data'=>'',
-			);
+		if( $result['is_image'] != true ){
+			@unlink($result['full_path']);
+			throw new CI_MyException(1,'上传的是非图片文件');
 		}
 		
 		return $result;
