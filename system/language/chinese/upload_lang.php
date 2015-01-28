@@ -1,21 +1,21 @@
 <?php
 
-$lang['upload_userfile_not_set'] = "È±ÉÙÉÏ´«ÎÄ¼þ×Ö¶Î";
-$lang['upload_file_exceeds_limit'] = "ÉÏ´«ÎÄ¼þ´óÐ¡³¬¹ýÁËphp.iniÖÐµÄÅäÖÃ";
-$lang['upload_file_exceeds_form_limit'] = "ÉÏ´«ÎÄ¼þ´óÐ¡³¬¹ýÁË±íµ¥ÖÐµÄÅäÖÃ";
-$lang['upload_file_partial'] = "ÉÏ´«ÎÄ¼þ½öÉÏ´«ÁËÒ»²¿·Ö";
-$lang['upload_no_temp_directory'] = "È±ÉÙtempÎÄ¼þ¼Ð";
-$lang['upload_unable_to_write_file'] = "Ð´ÈëÉÏ´«ÎÄ¼þÊ§°Ü";
-$lang['upload_stopped_by_extension'] = "ÉÏ´«ÎÄ¼þÈ±ÉÙºó×ºÃû";
-$lang['upload_no_file_selected'] = "ÄãÃ»ÓÐÑ¡ÔñÉÏ´«ÎÄ¼þ";
-$lang['upload_invalid_filetype'] = "ÄãÑ¡ÔñµÄÉÏ´«ÎÄ¼þÀàÐÍ²»ºÏ·¨";
-$lang['upload_invalid_filesize'] = "ÄãÑ¡ÔñµÄÉÏ´«ÎÄ¼þ´óÐ¡²»ºÏ·¨";
-$lang['upload_invalid_dimensions'] = "ÄãÉÏ´«µÄÍ¼Æ¬ÎÄ¼þÌ«¸ß»òÌ«¿í";
-$lang['upload_destination_error'] = "ÒÆ¶¯ÉÏ´«ÎÄ¼þµ½Ä¿±êÎÄ¼þ¼ÐÊ§°Ü";
-$lang['upload_no_filepath'] = "ÉÏ´«ÎÄ¼þ¼ÐÎ»ÖÃ²»ºÏ·¨";
-$lang['upload_no_file_types'] = "È±ÉÙ´«ÈëÉÏ´«ÎÄ¼þÀàÐÍ";
-$lang['upload_bad_filename'] = "ÒÑ¾­´æÔÚÖØ¸´µÄÉÏ´«ÎÄ¼þ";
-$lang['upload_not_writable'] = "Ä¿±êÎÄ¼þ¼Ð²»¿ÉÐ´";
+$lang['upload_userfile_not_set'] = "ç¼ºå°‘ä¸Šä¼ æ–‡ä»¶å­—æ®µ";
+$lang['upload_file_exceeds_limit'] = "ä¸Šä¼ æ–‡ä»¶å¤§å°è¶…è¿‡äº†php.iniä¸­çš„é…ç½®";
+$lang['upload_file_exceeds_form_limit'] = "ä¸Šä¼ æ–‡ä»¶å¤§å°è¶…è¿‡äº†è¡¨å•ä¸­çš„é…ç½®";
+$lang['upload_file_partial'] = "ä¸Šä¼ æ–‡ä»¶ä»…ä¸Šä¼ äº†ä¸€éƒ¨åˆ†";
+$lang['upload_no_temp_directory'] = "ç¼ºå°‘tempæ–‡ä»¶å¤¹";
+$lang['upload_unable_to_write_file'] = "å†™å…¥ä¸Šä¼ æ–‡ä»¶å¤±è´¥";
+$lang['upload_stopped_by_extension'] = "ä¸Šä¼ æ–‡ä»¶ç¼ºå°‘åŽç¼€å";
+$lang['upload_no_file_selected'] = "ä½ æ²¡æœ‰é€‰æ‹©ä¸Šä¼ æ–‡ä»¶";
+$lang['upload_invalid_filetype'] = "ä½ é€‰æ‹©çš„ä¸Šä¼ æ–‡ä»¶ç±»åž‹ä¸åˆæ³•";
+$lang['upload_invalid_filesize'] = "ä½ é€‰æ‹©çš„ä¸Šä¼ æ–‡ä»¶å¤§å°ä¸åˆæ³•";
+$lang['upload_invalid_dimensions'] = "ä½ ä¸Šä¼ çš„å›¾ç‰‡æ–‡ä»¶å¤ªé«˜æˆ–å¤ªå®½";
+$lang['upload_destination_error'] = "ç§»åŠ¨ä¸Šä¼ æ–‡ä»¶åˆ°ç›®æ ‡æ–‡ä»¶å¤¹å¤±è´¥";
+$lang['upload_no_filepath'] = "ä¸Šä¼ æ–‡ä»¶å¤¹ä½ç½®ä¸åˆæ³•";
+$lang['upload_no_file_types'] = "ç¼ºå°‘ä¼ å…¥ä¸Šä¼ æ–‡ä»¶ç±»åž‹";
+$lang['upload_bad_filename'] = "å·²ç»å­˜åœ¨é‡å¤çš„ä¸Šä¼ æ–‡ä»¶";
+$lang['upload_not_writable'] = "ç›®æ ‡æ–‡ä»¶å¤¹ä¸å¯å†™";
 
 
 /* End of file upload_lang.php */
