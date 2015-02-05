@@ -1,5 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-require_once(dirname(__FILE__).'/WXSDK/WX.class.php');
+require_once(dirname(__FILE__).'/WXSDK/OAuth.php');
+require_once(dirname(__FILE__).'/WXSDK/Api.php');
 class CI_WxSdk{
 	var $appId;
 	var $appKey;
@@ -14,46 +15,44 @@ class CI_WxSdk{
 		$this->scope = $option['scope'];
 	}
 	
-	public function login($loginInfo)
+	public function getLoginUrl($loginInfo)
 	{
-		$qc = new WX();
-		$result = $qc->wx_login(
+		$qc = new WXSdk_OAuth();
+		return $qc->getRedirectUrl(
 			$this->appId,
-			($this->callback)."?loginInfo=".$loginInfo,
+			$this->callback,
+			$loginInfo,
 			$this->scope
 		);
-		return $result;
 	}
 	
-	public function getUserInfo($accessToken,$openId)
+	public function getLoginInfo()
 	{
-		$qc = new WX();
-		$result = $qc->getUserInfo($accessToken,$openId);
-		return $result;
+		$qc = new WXSdk_OAuth();
+		return $qc->getState();
 	}
 	
 	public function getAccessTokenAndOpenId()
 	{
-		$qc = new WX();
-		$result = $qc->get_accesstoken_and_openid(
+		$qc = new WXSdk_OAuth();
+		return $qc->getAccessTokenAndOpenId(
 			$this->appId,
 			$this->appKey,
 			$this->callback
 		);
-		return $result;
 	}
 	
-	public function getLoginInfo(){
-		if( isset($_GET['loginInfo']) == false )
-			return array(
-				'code'=>1,
-				'msg'=>'¶ªÊ§µÇÂ¼ÐÅÏ¢',
-				'data'=>'',
-			);
-		return array(
-			'code'=>0,
-			'msg'=>'',
-			'data'=>$_GET['loginInfo']
+	public function getUserInfo($accessToken,$openId)
+	{
+		$qc = new WXSdk_Api(
+			$this->appId,
+			$accessToken,
+			$openId
 		);
+		return $qc->getUserInfo();
 	}
+	
+	
+	
+	
 }

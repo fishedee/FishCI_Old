@@ -1,10 +1,60 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-require_once(dirname(__FILE__).'/PHPMailer/class.phpmailer.php');
 class CI_Http{
 	var $CI;
+	
 	public function __construct(){
 		$this->CI = & get_instance();
 	}
+	
+	private function getFieldData($dataType,$data){
+		if( $dataType == 'text' ){
+			if( is_array($data))
+				$data = http_build_query($data);
+			else
+				throw new CI_MyException(1,'不合法的data'.$data.'与dataType'.$dataType);
+		}else if( $dataType == 'json'){
+			if( is_array($data))
+				$data = json_encode($data);
+			else
+				throw new CI_MyException(1,'不合法的data'.$data.'与dataType'.$dataType);
+		}else if( $dataType == 'plain'){
+			$data = $data;
+		}else{
+			throw new CI_MyException(1,'未确定的data type'.$dataType);
+		}
+		return $data;
+	}
+	
+	private function getResponseData($dataType,$data){
+		if( $dataType == 'text'){
+			$temp = $data;
+			parse_str($temp,$data);
+		}else if( $dataType == 'json'){
+			$data = json_decode($data,TRUE);
+		}else if( $dataType == 'jsonp'){
+			$lpos = strpos($data, "(");
+            $rpos = strrpos($data, ")");
+            $data  = substr($data, $lpos + 1, $rpos - $lpos -1);
+			$data = json_decode($data,TRUE);
+		}else if( $dataType == 'plain'){
+			$data = $data;
+		}else{
+			throw new CI_MyException(1,'未确定的response type'.$dataType);
+		}
+		return $data;
+	}
+	
+	private function getUrlWithData( $url , $data ){
+		if( is_array($data) == false )
+			throw new CI_MyException(1,'不合法的url data'.$data);
+		if( strpos($url,'?') == false )
+			$url .= '?';
+		else
+			$url .= '&';
+		$url .= http_build_query($data);
+		return $url;
+	}
+	
 	public function localAjax( $option ){
 		//处理option
 		$defaultOption = array(
@@ -29,18 +79,21 @@ class CI_Http{
 		$defaultOption = array(
 			'url'=>'',
 			'header'=>array(),
-			'type'=>'',
+			'type'=>'get',
 			'data'=>'',
 			'dataType'=>'text',
+			'responseType'=>'plain',
 			'timeout'=>5,
 			'async'=>false,
 		);
 		foreach( $option as $key=>$value )
 			$defaultOption[$key] = $value;
+		
 		//处理参数
 		$url = trim($defaultOption['url']);
 		$data = $defaultOption['data'];
 		$dataType = $defaultOption['dataType'];
+		$responseType = $defaultOption['responseType'];
 		$header = $defaultOption['header'];
 		$type = strtolower($defaultOption['type']);
 		$isAsync = $defaultOption['async'];
@@ -48,21 +101,24 @@ class CI_Http{
 			$timeout = $defaultOption['timeout']*1000;
 		else
 			$timeout = 50;
-		if( $dataType == 'text' ){
-			if( is_array($data))
-				$data = http_build_query($data);
-		}else if( $dataType == 'json'){
-			if( is_array($data))
-				$data = json_encode($data);
-		}else{
-			return array(
-				'code'=>1,
-				'msg'=>'未确定的data type'.$dataType,
-				'data'=>$data,
-			);
-		}
-		//执行抓取
+		
+		//配置curl
 		$curl = curl_init();
+		if( $type == 'get'){
+			$url = $this->getUrlWithData($url,$data);
+			curl_setopt($curl,CURLOPT_CUSTOMREQUEST,'GET');
+		}else if( $type == 'post'){
+			curl_setopt($curl,CURLOPT_CUSTOMREQUEST,'POST');
+			curl_setopt($curl,CURLOPT_POSTFIELDS,$this->getFieldData($dataType,$data));
+		}else if( $type == 'delete' ){
+			$url = $this->getUrlWithData($url,$data);
+			curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
+		}else if( $type == 'put' ){
+			curl_setopt($curl,CURLOPT_CUSTOMREQUEST, 'PUT');
+			curl_setopt($curl,CURLOPT_POSTFIELDS,$data);
+		}else{
+			throw new CI_MyException(1,'未确定的HTTP Type'.$type);
+		}
 		curl_setopt($curl, CURLOPT_URL, $url);
 		curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1); 
 		curl_setopt($curl, CURLOPT_TIMEOUT_MS , $timeout);
@@ -76,145 +132,18 @@ class CI_Http{
 		}
 		if(count($header) != 0 )
 			curl_setopt($curl,CURLOPT_HTTPHEADER,$header);
-		if( $type == 'get'){
-			//get donothing
-		}else if( $type == 'post'){
-			//post
-			curl_setopt($curl,CURLOPT_CUSTOMREQUEST,'POST');
-			curl_setopt($curl,CURLOPT_POSTFIELDS,$data);
-		}else if( $type == 'delete' ){
-			//delete
-			curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
-		}else if( $type == 'put' ){
-			//put
-			curl_setopt($curl,CURLOPT_CUSTOMREQUEST, 'PUT');
-			curl_setopt($curl,CURLOPT_POSTFIELDS,$data);
-		}else{
-			return array(
-				'code'=>1,
-				'msg'=>'未确定的HTTP Type'.$type,
-				'data'=>$data,
-			);
-		}
 		
+		//执行curl
 		$data = curl_exec($curl);
 		$headerData = curl_getinfo($curl);
 		curl_close($curl);
-		if( $isAsync == false && $data === false ){
-			return array(
-				'code'=>1,
-				'msg'=>'连接服务器失败 '.$url,
-				'data'=>''
-			);
-		}
+		if( $isAsync == false && $data === false )
+			throw new CI_MyException(1,'连接服务器失败 '.$url);
+		
 		//返回结果
 		return array(
-			'code'=>0,
-			'msg'=>'',
-			'data'=>array(
-				'header'=>$headerData,
-				'body'=>$data
-			),
-		);
-	}
-	/*
-	*@deprecated 废弃，应该用ajax
-	*/
-	public function sync($option){
-		//处理option
-		$defaultOption = array(
-			'host'=>'',
-			'port'=>'',
-			'isHttps'=>false,
-			'url'=>'/',
-		);
-		foreach( $option as $key=>$value)
-			$defaultOption[$key] = $value;
-		//处理参数
-		$url = '';
-		if( $defaultOption['isHttps'] )
-			$url .= 'https://';
-		else
-			$url .= 'http://';
-		$url .= $defaultOption['host'];
-		if( $defaultOption['port'] != '')
-			$url .= ':'.$defaultOption['port'];
-		$url .= $defaultOption['url'];
-		$defaultOption['url'] = $url;
-		return $this->ajax($defaultOption);
-	}
-	/*
-	*@deprecated 废弃，应该用ajax
-	*/
-	public function async($option){
-		//处理option
-		$defaultOption = array(
-			'host'=>'',
-			'port'=>'',
-			'url'=>'/',
-			'cookie'=>$_COOKIE,
-			'type'=>'post',
-			'data'=>array(),
-		);
-		$allHost = $_SERVER['HTTP_HOST'];
-		if( strpos($allHost,":") == false ){
-			$defaultOption['host'] = $allHost;
-			$defaultOption['port'] = 80;
-		}else{
-			$defaultOption['host'] = substr($allHost,0,strpos($allHost,":"));
-			$defaultOption['port'] = substr($allHost,strpos($allHost,":")+1);
-		}
-		foreach( $option as $key=>$value )
-			$defaultOption[$key] = $value;
-		if( $defaultOption['type'] != 'post')
-			return array(
-				'code'=>1,
-				'msg'=>'目前仅支持post请求',
-				'data'=>'',
-			);
-		//连接服务器
-		$errno = 0;
-		$errstr = 1;
-		$fp = @fsockopen(
-			$defaultOption['host'], 
-			$defaultOption['port'], 
-			$errno,
-			$errstr, 
-			30
-		);
-		if( !$fp )
-			return array(
-				'code'=>1,
-				'msg'=>'错误码：'.$errno.'错误描述：'.$errstr,
-				'data'=>$defaultOption
-			);
-		//拼接数据
-		$postData = '';
-		foreach( $defaultOption['data'] as $key=>$value ){
-			$postData .= $key.'='.urlencode($value).'&';
-		}
-		$postDataLen = strlen($postData);
-		$cookieData = '';
-		foreach( $defaultOption['cookie'] as $key=>$value ){
-			$cookieData .= $key.'='.urlencode($value).';';
-		}
-		$url = $defaultOption['url'];
-		$host = $defaultOption['host'];
-		$port = $defaultOption['port'];
-		$data =  "POST $url HTTP/1.0\r\n".
-			"Host: $host:$port\r\n".
-			"Cookie: $cookieData".
-			"Connection: Close\r\n".
-			"Content-Type: application/x-www-form-urlencoded\r\n".
-			"Content-Length: $postDataLen\r\n\r\n".
-			"$postData";
-		//发送数据
-		fputs($fp, $data);
-		fclose($fp);
-		return array(
-			'code'=>0,
-			'msg'=>'',
-			'data'=>$data,
+			'header'=>$headerData,
+			'body'=>$this->getResponseData($responseType,$data)
 		);
 	}
 };

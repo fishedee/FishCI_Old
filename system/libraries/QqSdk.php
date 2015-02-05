@@ -1,5 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-require_once(dirname(__FILE__).'/QQSDK/qqConnectAPI.php');
+require_once(dirname(__FILE__).'/QQSDK/OAuth.php');
+require_once(dirname(__FILE__).'/QQSDK/Api.php');
 class CI_QqSdk{
 	var $appId;
 	var $appKey;
@@ -14,63 +15,52 @@ class CI_QqSdk{
 		$this->scope = $option['scope'];
 	}
 	
-	public function login($loginInfo)
+	public function getLoginUrl($loginInfo)
 	{
-		$qc = new QC();
-		$result = $qc->qq_login(
+		$qc = new QQSdk_OAuth();
+		return $qc->getRedirectUrl(
 			$this->appId,
-			($this->callback)."?loginInfo=".$loginInfo,
+			$this->callback,
+			$loginInfo,
 			$this->scope
 		);
-		return $result;
 	}
 	
-	public function getUserInfo($accessToken,$openId)
+	public function getLoginInfo()
 	{
-		$qc = new QC(
-			$this->appId,
-			$accessToken,
-			$openId
-		);
-		$data = $qc->get_user_info();
-		return array(
-			'code'=>0,
-			'msg'=>'',
-			'data'=>$data
-		);
+		$qc = new QQSdk_OAuth();
+		return $qc->getState();
 	}
 	
 	public function getAccessToken()
 	{
-		$qc = new QC();
-		$result = $qc->get_accesstoken(
+		$qc = new QQSdk_OAuth();
+		return $qc->getAccessToken(
 			$this->appId,
 			$this->appKey,
 			$this->callback
 		);
-		return $result;
 	}
 	
 	public function getOpenId($accessToken)
 	{
-		$qc = new QC();
-		$result = $qc->get_openid(
+		$qc = new QQSdk_OAuth();
+		return $qc->getOpenId(
 			$accessToken
 		);
-		return $result;
 	}
 	
-	public function getLoginInfo(){
-		if( isset($_GET['loginInfo']) == false )
-			return array(
-				'code'=>1,
-				'msg'=>'¶ªÊ§µÇÂ¼ÐÅÏ¢',
-				'data'=>'',
-			);
-		return array(
-			'code'=>0,
-			'msg'=>'',
-			'data'=>$_GET['loginInfo']
+	public function getUserInfo($accessToken,$openId)
+	{
+		$qc = new QQSdk_Api(
+			$this->appId,
+			$accessToken,
+			$openId
 		);
+		return $qc->getUserInfo();
 	}
+	
+	
+	
+	
 }
