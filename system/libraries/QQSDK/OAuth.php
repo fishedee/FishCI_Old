@@ -16,7 +16,7 @@ class QQSdk_OAuth{
 	}
 	
 	public function getRedirectUrl($appid,$callback,$state,$scope){
-        //-------¹¹ÔìÇëÇó²ÎÊýÁÐ±í
+        //-------æž„é€ è¯·æ±‚å‚æ•°åˆ—è¡¨
         $keysArr = array(
             "response_type" => "code",
             "client_id" => $appid,
@@ -29,7 +29,7 @@ class QQSdk_OAuth{
     }
 	
 	public function getAccessToken($appId,$appKey,$callback){
-        //-------ÇëÇó²ÎÊýÁÐ±í
+        //-------è¯·æ±‚å‚æ•°åˆ—è¡¨
         $keysArr = array(
             "grant_type" => "authorization_code",
             "client_id" => $appId,
@@ -38,7 +38,7 @@ class QQSdk_OAuth{
             "code" => $_GET['code']
         );
 
-        //------¹¹ÔìÇëÇóaccess_tokenµÄurl
+        //------æž„é€ è¯·æ±‚access_tokençš„url
 		$httpResponse = $this->CI->http->ajax(array(
 			'url'=>$this->GET_ACCESS_TOKEN_URL,
 			'data'=>$keysArr,
@@ -51,12 +51,12 @@ class QQSdk_OAuth{
     }
 	
 	public function getOpenId($accessToken){
-        //-------ÇëÇó²ÎÊýÁÐ±í
+        //-------è¯·æ±‚å‚æ•°åˆ—è¡¨
         $keysArr = array(
             "access_token" => $accessToken
         );
 		
-		//------¹¹ÔìÇëÇóaccess_tokenµÄurl
+		//------æž„é€ è¯·æ±‚access_tokençš„url
 		$httpResponse = $this->CI->http->ajax(array(
 			'url'=>$this->GET_OPENID_URL,
 			'data'=>$keysArr,

@@ -127,7 +127,7 @@ class CI_Http{
 		curl_setopt($curl, CURLOPT_HEADER, false);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		if( strncmp($url,'https',5) == 0 ){
-			curl_setopt($curl,CURLOPT_SSL_VERIFYHOST,1);
+			curl_setopt($curl,CURLOPT_SSL_VERIFYHOST,2);
 			curl_setopt($curl,CURLOPT_SSL_VERIFYPEER,false);
 		}
 		if(count($header) != 0 )

@@ -51,8 +51,10 @@ class CI_WxSdk{
 		);
 		return $qc->getUserInfo();
 	}
-	
-	
-	
-	
+
+	public function checkServerValid($token){
+		$qc = new WXSdk_OAuth();
+		return $qc->checkServerValid($token);
+	}
+
 }

@@ -14,10 +14,10 @@ class WXSdk_Api{
 	}
 	
 	private function applyApi($url,$type,$keysArgv){
-		 //-------请求参数列表
+		 //-------璇锋眰鍙傛暟鍒楄〃
 		$keysArgv = array_merge($this->keysArr,$keysArgv);
 		
-		//------构造请求access_token的url
+		//------鏋勯�犺姹俛ccess_token鐨剈rl
 		$httpResponse = $this->CI->http->ajax(array(
 			'url'=>$url,
 			'type'=>$type,
@@ -34,6 +34,5 @@ class WXSdk_Api{
 	public function getUserInfo(){
         return $this->applyApi('https://api.weixin.qq.com/sns/userinfo','get',array());
     }
-	
 }
 ?>

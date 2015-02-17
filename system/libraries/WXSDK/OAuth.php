@@ -15,7 +15,7 @@ class WXSdk_OAuth{
 	}
 	
 	public function getRedirectUrl($appid,$callback,$state,$scope){
-		//-------¹¹ÔìÇëÇó²ÎÊýÁÐ±í
+		//-------æž„é€ è¯·æ±‚å‚æ•°åˆ—è¡¨
 		$keysArr = array(
 			"appid" => $appid,
 			"redirect_uri" => $callback,
@@ -28,7 +28,7 @@ class WXSdk_OAuth{
     }
 	
 	public function getAccessTokenAndOpenId($appId,$appKey,$callback){
-		//-------ÇëÇó²ÎÊýÁÐ±í
+		//-------è¯·æ±‚å‚æ•°åˆ—è¡¨
         $keysArr = array(
             "grant_type" => "authorization_code",
             "appid" => $appId,
@@ -36,7 +36,7 @@ class WXSdk_OAuth{
             "code" => $_GET['code']
         );
 
-        //------¹¹ÔìÇëÇóaccess_tokenµÄurl
+        //------æž„é€ è¯·æ±‚access_tokençš„url
 		$httpResponse = $this->CI->http->ajax(array(
 			'url'=>$this->GET_ACCESS_TOKEN_URL,
 			'data'=>$keysArr,
@@ -47,6 +47,23 @@ class WXSdk_OAuth{
 		
 		return $httpResponse['body'];
     }
+
+    public function checkServerValid($token){
+		$signature = $_GET["signature"];
+        $timestamp = $_GET["timestamp"];
+        $nonce = $_GET["nonce"];
+        $echostr = $_GET["echostr"];	
+        		
+		$tmpArr = array($token, $timestamp, $nonce);
+		sort($tmpArr, SORT_STRING);
+		$tmpStr = implode( $tmpArr );
+		$tmpStr = sha1( $tmpStr );
+		
+		if( $tmpStr != $signature ){
+			throw new CI_MyException(1,'ä¸åˆæ³•çš„å¾®ä¿¡æœåŠ¡å™¨');
+		echo $echostr;
+	}
+}
 	
 }
 ?>

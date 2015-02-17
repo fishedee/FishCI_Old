@@ -5,6 +5,7 @@ class CI_MyException extends Exception{
     public function __construct($code = 1,$message = '',$data = '') {  
         parent::__construct($message,$code);
 		$this->data = $data;
+		log_message('ERROR','[file:'.parent::getFile().'][line:'.parent::getLine().'][code:'.parent::getCode().'][msg:'.parent::getMessage().']');
     }
 	
 	public function getData() {  
