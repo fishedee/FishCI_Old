@@ -85,6 +85,7 @@ class CI_Http{
 			'responseType'=>'plain',
 			'timeout'=>5,
 			'async'=>false,
+			'ssl'=>array(),
 		);
 		foreach( $option as $key=>$value )
 			$defaultOption[$key] = $value;
@@ -97,6 +98,7 @@ class CI_Http{
 		$header = $defaultOption['header'];
 		$type = strtolower($defaultOption['type']);
 		$isAsync = $defaultOption['async'];
+		$ssl = $defaultOption['ssl'];
 		if( $isAsync == false )
 			$timeout = $defaultOption['timeout']*1000;
 		else
@@ -127,8 +129,18 @@ class CI_Http{
 		curl_setopt($curl, CURLOPT_HEADER, false);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 		if( strncmp($url,'https',5) == 0 ){
-			curl_setopt($curl,CURLOPT_SSL_VERIFYHOST,2);
+			curl_setopt($curl,CURLOPT_SSL_VERIFYHOST,false);
 			curl_setopt($curl,CURLOPT_SSL_VERIFYPEER,false);
+
+			if( isset($ssl['cert'])){
+				curl_setopt($ch,CURLOPT_SSLCERTTYPE,'PEM');
+				curl_setopt($ch,CURLOPT_SSLCERT, $ssl['cert']);
+			}
+			if( isset($ssl['key'])){
+				curl_setopt($ch,CURLOPT_SSLKEYTYPE,'PEM');
+				curl_setopt($ch,CURLOPT_SSLKEY, $ssl['key']);
+			}
+
 		}
 		if(count($header) != 0 )
 			curl_setopt($curl,CURLOPT_HTTPHEADER,$header);

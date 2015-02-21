@@ -27,7 +27,7 @@ class WXSdk_OAuth{
 		return $this->GET_AUTH_CODE_URL.'?'.http_build_query($keysArr);
     }
 	
-	public function getAccessTokenAndOpenId($appId,$appKey,$callback){
+	public function getAccessTokenAndOpenId($appId,$appKey){
 		//-------请求参数列表
         $keysArr = array(
             "grant_type" => "authorization_code",
