@@ -354,28 +354,41 @@ require_once(dirname(__FILE__).'/MyException.php');
 				show_404("{$class}/{$method}");
 			}
 		}
+		//获取函数的所有注释列表
+		$docComment = array();
+		$callFunc  = new ReflectionMethod($CI,$method);
+		$callFuncDoc   = $callFunc->getDocComment();
+		if( $callFuncDoc !== false ){
+			preg_match_all('/@(\w+)\s+(.*?)\n/',$callFuncDoc,$callFuncMatch,PREG_SET_ORDER);
+			foreach($callFuncMatch as $single){
+				$docComment[$single[1]] = $single[2];
+			}
+		}
+
+		//trans注释
+		if( isset($docComment['trans']) )
+			$this->db->trans_begin();
 
 		// Call the requested method.
 		// Any URI segments present (besides the class/function) will be passed to the method for convenience
 		// fish begin 加入读取控制器的视图，自动输出
 		try{
 			$callResult = call_user_func_array(array(&$CI, $method), array_slice($URI->rsegments, 2));
+			if( isset($docComment['trans']) ){
+				if($this->db->trans_status() === FALSE)
+					$this->db->trans_rollback();
+				else
+					$this->db->trans_commit();
+			}
 		}catch( Exception $e ){
 			$callResult = $e;
+			if( isset($docComment['trans']) )
+				$this->db->trans_rollback();
 		}
-		$callFunc  = new ReflectionMethod($CI,$method);
 		
-		$callFuncDoc   = $callFunc->getDocComment();
-		if( $callFuncDoc !== false ){
-			$flag  = preg_match_all('/@view(.*?)\n/',$callFuncDoc,$callFuncDoc);
-			$callFuncView   = trim($callFuncDoc[1][0]);
-			if( $callFuncView != ''){
-				$CI->load->view($callFuncView,array('data'=>$callResult));
-			}
-		}else{
-			log_message('debug','nothing doccomment found '.$class.','.$method);
-		}
-		// fish end
+		//view注释
+		if( isset($docComment['view']))
+			$CI->load->view($docComment['view'],array('data'=>$callResult));
 	}
 
 

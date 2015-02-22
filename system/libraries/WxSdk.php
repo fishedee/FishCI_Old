@@ -53,7 +53,7 @@ class CI_WxSdk{
 		return $qc->getUserInfo();
 	}
 
-	public function getJsPayInfo($openId,$dealId,$dealDesc,$dealFee,$dealNotify){
+	public function getOrderPayInfo($openId,$dealId,$dealDesc,$dealFee,$dealNotify){
 		$qc = new WXSdk_Pay(
 			$this->option['appId'],
 			$this->option['appKey'],
@@ -63,7 +63,7 @@ class CI_WxSdk{
 			$this->option['mchSslKey']
 		);
 
-		$orderInfo = $qc->unifiedOrder(array(
+		return $qc->unifiedOrder(array(
 			'openid'=>$openId,
 			'out_trade_no'=>$dealId,
 			'body'=>$dealDesc,
@@ -71,12 +71,21 @@ class CI_WxSdk{
 			'notify_url'=>$dealNotify,
 			'trade_type'=>'JSAPI'
 		));
+	}
 
-		$jsOrderInfo = $qc->jsPayOrder(
-			$orderInfo['prepay_id']
+	public function getJsPayInfo($prepay_id){
+		$qc = new WXSdk_Pay(
+			$this->option['appId'],
+			$this->option['appKey'],
+			$this->option['mchId'],
+			$this->option['mchKey'],
+			$this->option['mchSslCert'],
+			$this->option['mchSslKey']
 		);
 
-		return $jsOrderInfo;
+		return $qc->jsPayOrder(
+			$prepay_id
+		);
 	}
 
 	public function getPayCallBackInfo(){
