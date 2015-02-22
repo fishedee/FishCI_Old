@@ -367,7 +367,7 @@ require_once(dirname(__FILE__).'/MyException.php');
 
 		//trans注释
 		if( isset($docComment['trans']) )
-			$this->db->trans_begin();
+			$CI->db->trans_begin();
 
 		// Call the requested method.
 		// Any URI segments present (besides the class/function) will be passed to the method for convenience
@@ -375,15 +375,15 @@ require_once(dirname(__FILE__).'/MyException.php');
 		try{
 			$callResult = call_user_func_array(array(&$CI, $method), array_slice($URI->rsegments, 2));
 			if( isset($docComment['trans']) ){
-				if($this->db->trans_status() === FALSE)
-					$this->db->trans_rollback();
+				if($CI->db->trans_status() === FALSE)
+					$CI->db->trans_rollback();
 				else
-					$this->db->trans_commit();
+					$CI->db->trans_commit();
 			}
 		}catch( Exception $e ){
 			$callResult = $e;
 			if( isset($docComment['trans']) )
-				$this->db->trans_rollback();
+				$CI->db->trans_rollback();
 		}
 		
 		//view注释

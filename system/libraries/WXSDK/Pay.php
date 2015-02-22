@@ -169,16 +169,16 @@ class WXSdk_Pay{
 		$notifyData = $this->xmlToArray($response);
 		
 		if( $notifyData['return_code'] != 'SUCCESS')
-			throw new CI_MyException(1,'调用微信支付接口失败[url:'.$url.'][response:'.$response.']');
+			throw new CI_MyException(1,'微信支付通知接口失败[response:'.$response.']');
 
 		$notifySign = $notifyData['sign'];
 		unset($notifyData['sign']);
 		$notifyMySign = $this->getSign($notifyData);
 		if( $notifySign != $notifyMySign )
-			throw new CI_MyException(1,'校验微信签名失败[url:'.$url.'][response:'.$response.']');	
+			throw new CI_MyException(1,'微信支付通知签名失败[response:'.$response.']');	
 
 		if( $notifyData['result_code'] != 'SUCCESS')
-			throw new CI_MyException(1,'调用微信支付接口失败[url:'.$url.'][response:'.$response.']');	
+			throw new CI_MyException(1,'微信支付通知接口失败[response:'.$response.']');	
 
 		return $notifyData;
 	}
