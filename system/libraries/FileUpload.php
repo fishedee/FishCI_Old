@@ -55,12 +55,20 @@ class CI_FileUpload{
 		//校验文件大小
 		if( isset($option['max_size']) && $option['max_size'] < strlen($data))
 			throw new CI_MyException(1,'文件超过'.($option['max_size']/1024).'KB');
-			
+		
+		//校验上传文件夹
+		if( is_dir($option['upload_path']) === false )
+			throw new CI_MyException(1,'上传文件夹不存在！请确定上传文件夹是否合法！');
+		if( is_writeable($option['upload_path']) === false )
+			throw new CI_MyException(1,'上传文件夹不可写！请确定上传文件夹是否有恰当的权限！');
+
 		//保存文件
 		$uniqueName = md5(uniqid());
 		$fileName = $uniqueName;
 		$fileAddress = $option['upload_path'].'/'.$fileName ;
-		$file = fopen($fileAddress,"wb");
+		$file = @fopen($fileAddress,"wb");
+		if($file === false )
+			throw new CI_MyException(1,'打开文件失败'.$fileAddress);
 		fwrite($file,$data);
 		fclose($file);
 		
