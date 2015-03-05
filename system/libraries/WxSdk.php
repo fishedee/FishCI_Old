@@ -53,6 +53,16 @@ class CI_WxSdk{
 		return $qc->getUserInfo();
 	}
 
+	public function getUserInfoWithUnionId($accessToken,$openId)
+	{
+		$qc = new WXSdk_Api(
+			$this->option['appId'],
+			$accessToken,
+			$openId
+		);
+		return $qc->getUserInfoWithUnionId();
+	}
+
 	public function getOrderPayInfo($openId,$dealId,$dealDesc,$dealFee,$dealNotify){
 		$qc = new WXSdk_Pay(
 			$this->option['appId'],
