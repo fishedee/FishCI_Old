@@ -23,22 +23,13 @@ class CI_Image{
 				);
 		}
 		exec($cmd);
-		return array(
-			'code'=>0,
-			'msg'=>'',
-			'data'=>''
-		);
 	}
 	
 	public function compress( $image ){
 		$imageInfo = @getimagesize($image);
-		if( $imageInfo == false ){
-			return array(
-				'code'=>1,
-				'msg'=>'读取图像失败',
-				'data'=>''
-			);
-		}
+		if( $imageInfo == false )
+			throw new CI_MyException(1,'读取图像失败');
+		
 		return $this->compressWithImageInfo($image,$imageInfo);
 	}
 	
@@ -51,48 +42,30 @@ class CI_Image{
 	
 	public function getSizeInfo($address){
 		$result = @getimagesize($address);
-		if( $result == false ){
-			return array(
-				'code'=>1,
-				'msg'=>'获取图像数据失败',
-				'data'=>''
-			);
-		}
+		if( $result == false )
+			throw new CI_MyException(1,'获取图像数据失败');
 		
 		$imageInfo = $result;
 		return array(
-			'code'=>0,
-			'msg'=>'',
-			'data'=>array(
-				'width'=>$imageInfo[0],
-				'height'=>$imageInfo[1]
-			)
+			'width'=>$imageInfo[0],
+			'height'=>$imageInfo[1]
 		);
 	}
 	
 	public function resizeByURL($option){
-		if( isset($option['image']) == false )
-			return array(
-				'code'=>1,
-				'msg'=>'缺少file参数',
-				'data'=>''
-			);
-		$fileAddressPathInfo = pathinfo($option['image']);
+		if( isset($option['url']) == false )
+			throw new CI_MyException(1,'缺少url参数');
+			
+		$fileAddressPathInfo = pathinfo($option['url']);
 		$fileName = $fileAddressPathInfo['basename'];
 		$option['image'] = $this->CI->config->item('upload_path').'/'.$fileName;
 		
 		$result = $this->resize($option);
-		if( $result['code'] != 0 )
-			return $result;
 			
 		return array(
-			'code'=>0,
-			'msg'=>'',
-			'data'=>array(
-				'url'=>$this->CI->config->item('upload_url').$result['data']['file_name'],
-				'width'=>$result['data']['width'],
-				'height'=>$result['data']['height']
-			)
+			'url'=>$this->CI->config->item('upload_url').$result['file_name'],
+			'width'=>$result['width'],
+			'height'=>$result['height']
 		);
 	}
 	
@@ -100,28 +73,18 @@ class CI_Image{
 		//校验输入参数
 		if( isset($option['width']) == false 
 			&& isset($option['height']) == false )
-			return array(
-				'code'=>1,
-				'msg'=>'缺少width或height参数',
-				'data'=>''
-			);
+			throw new CI_MyException(1,'缺少width或height参数');
+			
 		if( isset($option['image']) == false )
-			return array(
-				'code'=>1,
-				'msg'=>'缺少file参数',
-				'data'=>''
-			);
+			throw new CI_MyException(1,'缺少file参数');
+			
 		$fileAddress = $option['image'];
 		
 		//获取原来图像的长和宽
 		$result = @getimagesize($fileAddress);
-		if( $result == false ){
-			return array(
-				'code'=>1,
-				'msg'=>'图像格式错误',
-				'data'=>''
-			);
-		}
+		if( $result == false )
+			throw new CI_MyException(1,'图像格式错误');
+			
 		$imageWidth = $result[0];
 		$imageHeight = $result[1];
 		
@@ -182,13 +145,8 @@ class CI_Image{
 		$config['maintain_ratio'] = true;
 		$this->CI->load->library('image_lib');
 		$this->CI->image_lib->initialize($config); 
-		if( !$this->CI->image_lib->resize() ){
-			return array(
-				'code'=>1,
-				'msg'=>$this->CI->image_lib->display_errors(),
-				'data'=>''
-			);
-		}
+		if( !$this->CI->image_lib->resize() )
+			throw new CI_MyException(1,$this->CI->image_lib->display_errors());
 		
 		//剪裁图像
 		if( $newImageCropX != 0 || $newImageCropY != 0 ){
@@ -202,43 +160,28 @@ class CI_Image{
 			$config['y_axis'] = $newImageCropY;
 			$config['maintain_ratio'] = false;
 			$this->CI->image_lib->initialize($config); 
-			if( !$this->CI->image_lib->crop() ){
-				return array(
-					'code'=>1,
-					'msg'=>$this->CI->image_lib->display_errors(),
-					'data'=>''
-				);
-			}
+			if( !$this->CI->image_lib->crop() )
+				throw new CI_MyException(1,$this->CI->image_lib->display_errors());
 		}
 		
 		//读取新图像文件大小
 		$result = @getimagesize($newFileAddress);
-		if( $result == false ){
-			return array(
-				'code'=>1,
-				'msg'=>'转换图像失败',
-				'data'=>''
-			);
-		}
+		if( $result == false )
+			throw new CI_MyException(1,'转换图像失败');
+			
 		$imageInfo = $result;
 		$imageWidth = $imageInfo[0];
 		$imageHeight = $imageInfo[1];
 		
 		//优化压缩图片大小
-		$result = $this->compressWithImageInfo($newFileAddress,$imageInfo);
-		if( $result['code'] != 0 )
-			return $result;
+		$this->compressWithImageInfo($newFileAddress,$imageInfo);
 		
 		return array(
-			'code'=>0,
-			'msg'=>'',
-			'data'=>array(
-				'file_name'=>$newFileName,
-				'file_path'=>$newFileAddress,
-				'full_path'=>$newFileAddress,
-				'width'=>$imageWidth,
-				'height'=>$imageHeight
-			)
+			'file_name'=>$newFileName,
+			'file_path'=>$newFileAddress,
+			'full_path'=>$newFileAddress,
+			'width'=>$imageWidth,
+			'height'=>$imageHeight
 		);
 	}
 }
