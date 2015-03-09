@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-require_once(dirname(__FILE__).'/QQSDK/OAuth.php');
-require_once(dirname(__FILE__).'/QQSDK/Api.php');
+require_once(dirname(__FILE__).'/QqSdk/OAuth.php');
+require_once(dirname(__FILE__).'/QqSdk/Api.php');
 class CI_QqSdk{
 	var $appId;
 	var $appKey;

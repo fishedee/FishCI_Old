@@ -1,7 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-require_once(dirname(__FILE__).'/WXSDK/OAuth.php');
-require_once(dirname(__FILE__).'/WXSDK/Api.php');
-require_once(dirname(__FILE__).'/WXSDK/Pay.php');
+require_once(dirname(__FILE__).'/WxSdk/OAuth.php');
+require_once(dirname(__FILE__).'/WxSdk/Api.php');
+require_once(dirname(__FILE__).'/WxSdk/Pay.php');
 class CI_WxSdk{
 	var $option;
 
