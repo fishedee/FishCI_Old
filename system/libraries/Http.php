@@ -47,6 +47,8 @@ class CI_Http{
 	private function getUrlWithData( $url , $data ){
 		if( is_array($data) == false )
 			throw new CI_MyException(1,'不合法的url data'.$data);
+		if( count($data) == 0 )
+			return $url;
 		if( strpos($url,'?') == false )
 			$url .= '?';
 		else
@@ -61,7 +63,7 @@ class CI_Http{
 			'url'=>'',
 			'header'=>array(),
 			'type'=>'',
-			'data'=>'',
+			'data'=>array(),
 			'dataType'=>'text',
 			'timeout'=>5,
 			'async'=>false,
@@ -80,7 +82,7 @@ class CI_Http{
 			'url'=>'',
 			'header'=>array(),
 			'type'=>'get',
-			'data'=>'',
+			'data'=>array(),
 			'dataType'=>'text',
 			'responseType'=>'plain',
 			'timeout'=>5,
