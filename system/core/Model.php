@@ -26,6 +26,7 @@
  */
 class CI_Model {
 
+	var $class;
 	/**
 	 * Constructor
 	 *
@@ -33,8 +34,8 @@ class CI_Model {
 	 */
 	function __construct()
 	{
-		$class = new ReflectionClass($this);
-		log_message('debug', "Model Class Initialized ".$class->getName() );
+		$this->class = new ReflectionClass($this);
+		log_message('debug', "Model Class Initialized ".$this->class->getName() );
 	}
 
 	/**
@@ -49,6 +50,9 @@ class CI_Model {
 	function __get($key)
 	{
 		$CI =& get_instance();
+		if(property_exists($CI,$key) === false ){
+			log_message('error', "Has not this proerty ".$this->class->getName().'::'.$key );
+		}
 		return $CI->$key;
 	}
 }
