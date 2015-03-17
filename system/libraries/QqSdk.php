@@ -4,41 +4,38 @@ require_once(dirname(__FILE__).'/QqSdk/Api.php');
 class CI_QqSdk{
 	var $appId;
 	var $appKey;
-	var $callback;
-	var $scope;
+
 	public function __construct($option)
     {
 		$this->CI = & get_instance();
 		$this->appId = $option['appId'];
 		$this->appKey = $option['appKey'];
-		$this->callback = $option['callback'];
-		$this->scope = $option['scope'];
 	}
 	
-	public function getLoginUrl($loginInfo)
+	public function getLoginUrl($callback,$callbackInfo,$scope)
 	{
 		$qc = new QQSdk_OAuth();
 		return $qc->getRedirectUrl(
 			$this->appId,
-			$this->callback,
-			$loginInfo,
-			$this->scope
+			$callback,
+			$callbackInfo,
+			$scope
 		);
 	}
 	
-	public function getLoginInfo()
+	public function getLoginCallBackInfo()
 	{
 		$qc = new QQSdk_OAuth();
 		return $qc->getState();
 	}
 	
-	public function getAccessToken()
+	public function getAccessToken($callback)
 	{
 		$qc = new QQSdk_OAuth();
 		return $qc->getAccessToken(
 			$this->appId,
 			$this->appKey,
-			$this->callback
+			$callback
 		);
 	}
 	
