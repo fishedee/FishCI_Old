@@ -2,6 +2,7 @@
 class WXSdk_OAuth{
 	var $CI;
 	var $VERSION = "2.0";
+	var $GET_AUTH_CODE_URL_PC = "https://open.weixin.qq.com/connect/qrconnect";
     var $GET_AUTH_CODE_URL = "https://open.weixin.qq.com/connect/oauth2/authorize";
     var $GET_ACCESS_TOKEN_URL = "https://api.weixin.qq.com/sns/oauth2/access_token";
 	
@@ -25,6 +26,18 @@ class WXSdk_OAuth{
         );
 		
 		return $this->GET_AUTH_CODE_URL.'?'.http_build_query($keysArr);
+    }
+
+    public function getPcRedirectUrl($appid,$callback,$state,$scope){
+    	$keysArr = array(
+			"appid" => $appid,
+			"redirect_uri" => $callback,
+            "response_type" => "code",
+            "scope" => $scope,
+            "state" => $state,
+        );
+		
+		return $this->GET_AUTH_CODE_URL_PC.'?'.http_build_query($keysArr);
     }
 	
 	public function getAccessTokenAndOpenId($appId,$appKey){

@@ -20,6 +20,18 @@ class CI_WxSdk{
 			$callbackInfo,
 			$scope
 		);
+			
+	}
+
+	public function getPcLoginUrl($callback,$callbackInfo,$scope)
+	{
+		$qc = new WXSdk_OAuth();
+		return $qc->getPcRedirectUrl(
+			$this->option['appId'],
+			$callback,
+			$callbackInfo,
+			$scope
+		);
 	}
 	
 	public function getLoginCallBackInfo()
