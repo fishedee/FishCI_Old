@@ -9,49 +9,37 @@ class CI_Timer{
 	
 	public function tick()
 	{
-		//²»ÏÞ½Å±¾ÔËÐÐÊ±¼ä
+		//ä¸é™è„šæœ¬è¿è¡Œæ—¶é—´
 		set_time_limit(0); 
-		//¼ÆËãÏÖÔÚÓÐ¶àÉÙ·ÖÖÓ
+		//è®¡ç®—çŽ°åœ¨æœ‰å¤šå°‘åˆ†é’Ÿ
 		$now = time();
 		$nowMinutes = $now/60;
 		$nowSeconds = $now%60;
-		//±éÀúËùÓÐÈÎÎñ
+		//éåŽ†æ‰€æœ‰ä»»åŠ¡
 		$timerTasks = $this->CI->config->item('timer');
 		foreach( $timerTasks as $singleTimerTask ){
 			$singleTimerTaskTime = $singleTimerTask['period'];
 			$singleTimerTaskTask = $singleTimerTask['task'];
 			$singleTimerTaskTime = $singleTimerTaskTime /60;
 			if( $nowMinutes % $singleTimerTaskTime == 0 ){
-				$result = $this->tickSingleTask($singleTimerTaskTask);
-				if( $result['code'] != 0 )
-					log_message('ERROR',$result['msg']);
+				try{
+					$this->tickSingleTask($singleTimerTaskTask);
+				}catch(Exception $e){
+
+				}
 			}
 		}
-		//µ÷ÊÔ
-		log_message('DEBUG','timer tick finish');
-		return array(
-			'code'=>0,
-			'msg'=>'',
-			'data'=>''
-		);
+		//è°ƒè¯•
+		log_message('INFO','timer tick finish');
 	}
 	
 	public function tickSingleTask($task)
 	{
 		$taskPath = APPPATH.'timer/'.$task.'.php';
-		if( !file_exists($taskPath)){
-			return array(
-				'code'=>1,
-				'msg'=>'unknown task path '.$taskPath,
-				'data'=>''
-			);
-		}
+		if( !file_exists($taskPath))
+			throw new CI_MyException(1,'unknown task path '.$taskPath);
+
 		require_once($taskPath);
-		return array(
-			'code'=>0,
-			'msg'=>'',
-			'data'=>''
-		);
 	}
 }
 ?>

@@ -30,7 +30,7 @@ class CI_Log {
 	protected $_threshold	= 1;
 	protected $_date_fmt	= 'Y-m-d H:i:s';
 	protected $_enabled	= TRUE;
-	protected $_levels	= array('ERROR' => '1', 'DEBUG' => '2',  'INFO' => '3', 'ALL' => '4');
+	protected $_levels	= array('ERROR' => '1',  'INFO' => '2', 'DEBUG' => '3',  'ALL' => '4');
 
 	/**
 	 * Constructor
@@ -85,6 +85,8 @@ class CI_Log {
 
 		$filepath = $this->_log_path.'log-'.date('Y-m-d').'.php';
 		$message  = '';
+		$uri = '';
+		$addr = '';
 
 		if ( ! file_exists($filepath))
 		{
@@ -96,7 +98,17 @@ class CI_Log {
 			return FALSE;
 		}
 
-		$message .= $level.' '.(($level == 'INFO') ? ' -' : '-').' '.date($this->_date_fmt).' '.$_SERVER['REMOTE_ADDR'].' '.$_SERVER['REQUEST_URI'].' --> '.$msg."\n";
+		if( isset($_SERVER['REMOTE_ADDR']))
+			$addr = $_SERVER['REMOTE_ADDR'];
+		else if( isset($_SEVER['SSH_CONNECTION']))
+			$addr = $_SERVER['SSH_CONNECTION'];
+
+		if(isset($_SERVER['REQUEST_URI']))
+			$uri = $_SERVER['REQUEST_URI'];
+		else if(isset($_SERVER['argv']))
+			$uri = implode('/',$_SERVER['argv']);
+
+		$message .= $level.' '.(($level == 'INFO') ? ' -' : '-').' '.date($this->_date_fmt).' '.$addr.' '.$uri.' --> '.$msg."\n";
 
 		flock($fp, LOCK_EX);
 		fwrite($fp, $message);
