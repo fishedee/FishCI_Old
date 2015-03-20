@@ -657,7 +657,7 @@ class CI_DB_active_record extends CI_DB_driver {
 		{
 			$k = $this->_protect_identifiers($k);
 
-			$prefix = (count($this->ar_like) == 0) ? '' : $type;
+			$prefix = (count($this->ar_where) == 0) ? '' : $type;
 
 			$v = $this->escape_like_str($v);
 			
@@ -684,11 +684,11 @@ class CI_DB_active_record extends CI_DB_driver {
 				$like_statement = $like_statement.sprintf($this->_like_escape_str, $this->_like_escape_chr);
 			}
 
-			$this->ar_like[] = $like_statement;
+			$this->ar_where[] = $like_statement;
 			if ($this->ar_caching === TRUE)
 			{
-				$this->ar_cache_like[] = $like_statement;
-				$this->ar_cache_exists[] = 'like';
+				$this->ar_cache_where[] = $like_statement;
+				$this->ar_cache_exists[] = 'where';
 			}
 
 		}
