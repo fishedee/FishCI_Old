@@ -321,74 +321,78 @@ require_once(dirname(__FILE__).'/MyException.php');
  * ------------------------------------------------------
  */
 	// Is there a "remap" function? If so, we call it instead
-	if (method_exists($CI, '_remap'))
-	{
-		$CI->_remap($method, array_slice($URI->rsegments, 2));
-	}
-	else
-	{
-		// is_callable() returns TRUE on some versions of PHP 5 for private and protected
-		// methods, so we'll use this workaround for consistent behavior
-		if ( ! in_array(strtolower($method), array_map('strtolower', get_class_methods($CI))))
-		{
-			// Check and see if we are using a 404 override and use it.
-			if ( ! empty($RTR->routes['404_override']))
-			{
-				$x = explode('/', $RTR->routes['404_override']);
-				$class = $x[0];
-				$method = (isset($x[1]) ? $x[1] : 'index');
-				if ( ! class_exists($class))
-				{
-					if ( ! file_exists(APPPATH.'controllers/'.$class.'.php'))
-					{
-						show_404("{$class}/{$method}");
-					}
+	if( !defined('PHPUNIT_TEST') ){
 
-					include_once(APPPATH.'controllers/'.$class.'.php');
-					unset($CI);
-					$CI = new $class();
+		if (method_exists($CI, '_remap'))
+		{
+			$CI->_remap($method, array_slice($URI->rsegments, 2));
+		}
+		else
+		{
+			// is_callable() returns TRUE on some versions of PHP 5 for private and protected
+			// methods, so we'll use this workaround for consistent behavior
+			if ( ! in_array(strtolower($method), array_map('strtolower', get_class_methods($CI))))
+			{
+				// Check and see if we are using a 404 override and use it.
+				if ( ! empty($RTR->routes['404_override']))
+				{
+					$x = explode('/', $RTR->routes['404_override']);
+					$class = $x[0];
+					$method = (isset($x[1]) ? $x[1] : 'index');
+					if ( ! class_exists($class))
+					{
+						if ( ! file_exists(APPPATH.'controllers/'.$class.'.php'))
+						{
+							show_404("{$class}/{$method}");
+						}
+
+						include_once(APPPATH.'controllers/'.$class.'.php');
+						unset($CI);
+						$CI = new $class();
+					}
+				}
+				else
+				{
+					show_404("{$class}/{$method}");
 				}
 			}
-			else
-			{
-				show_404("{$class}/{$method}");
+			//获取函数的所有注释列表
+			$docComment = array();
+			$callFunc  = new ReflectionMethod($CI,$method);
+			$callFuncDoc   = $callFunc->getDocComment();
+			if( $callFuncDoc !== false ){
+				preg_match_all('/@(\w+)\s+(.*?)\n/',$callFuncDoc,$callFuncMatch,PREG_SET_ORDER);
+				foreach($callFuncMatch as $single){
+					$docComment[$single[1]] = $single[2];
+				}
 			}
-		}
-		//获取函数的所有注释列表
-		$docComment = array();
-		$callFunc  = new ReflectionMethod($CI,$method);
-		$callFuncDoc   = $callFunc->getDocComment();
-		if( $callFuncDoc !== false ){
-			preg_match_all('/@(\w+)\s+(.*?)\n/',$callFuncDoc,$callFuncMatch,PREG_SET_ORDER);
-			foreach($callFuncMatch as $single){
-				$docComment[$single[1]] = $single[2];
-			}
-		}
 
-		//trans注释
-		if( isset($docComment['trans']) )
-			$CI->db->trans_begin();
-
-		// Call the requested method.
-		// Any URI segments present (besides the class/function) will be passed to the method for convenience
-		// fish begin 加入读取控制器的视图，自动输出
-		try{
-			$callResult = call_user_func_array(array(&$CI, $method), array_slice($URI->rsegments, 2));
-			if( isset($docComment['trans']) ){
-				if($CI->db->trans_status() === FALSE)
-					$CI->db->trans_rollback();
-				else
-					$CI->db->trans_commit();
-			}
-		}catch( Exception $e ){
-			$callResult = $e;
+			//trans注释
 			if( isset($docComment['trans']) )
-				$CI->db->trans_rollback();
+				$CI->db->trans_begin();
+
+			// Call the requested method.
+			// Any URI segments present (besides the class/function) will be passed to the method for convenience
+			// fish begin 加入读取控制器的视图，自动输出
+			try{
+				$callResult = call_user_func_array(array(&$CI, $method), array_slice($URI->rsegments, 2));
+				if( isset($docComment['trans']) ){
+					if($CI->db->trans_status() === FALSE)
+						$CI->db->trans_rollback();
+					else
+						$CI->db->trans_commit();
+				}
+			}catch( Exception $e ){
+				$callResult = $e;
+				if( isset($docComment['trans']) )
+					$CI->db->trans_rollback();
+			}
+			
+			//view注释
+			if( isset($docComment['view']))
+				$CI->load->view($docComment['view'],array('data'=>$callResult));
 		}
-		
-		//view注释
-		if( isset($docComment['view']))
-			$CI->load->view($docComment['view'],array('data'=>$callResult));
+
 	}
 
 
@@ -407,9 +411,12 @@ require_once(dirname(__FILE__).'/MyException.php');
  *  Send the final rendered output to the browser
  * ------------------------------------------------------
  */
-	if ($EXT->_call_hook('display_override') === FALSE)
-	{
-		$OUT->_display();
+	if( !defined('PHPUNIT_TEST') ){
+
+		if ($EXT->_call_hook('display_override') === FALSE)
+		{
+			$OUT->_display();
+		}
 	}
 
 /*

@@ -303,12 +303,20 @@ if ( ! function_exists('config_item'))
 */
 if ( ! function_exists('show_error'))
 {
-	function show_error($message, $status_code = 500, $heading = 'An Error Was Encountered')
-	{
-		$_error =& load_class('Exceptions', 'core');
-		echo $_error->show_error($heading, $message, 'error_general', $status_code);
-		exit;
+	if( !defined('PHPUNIT_TEST') ){
+		function show_error($message, $status_code = 500, $heading = 'An Error Was Encountered')
+		{
+			$_error =& load_class('Exceptions', 'core');
+			echo $_error->show_error($heading, $message, 'error_general', $status_code);
+			exit;
+		}
+	}else{
+		function show_error($message, $status_code = 500, $heading = 'An Error Was Encountered')
+		{
+			throw new PHPUnit_Framework_Exception($message, $status_code);
+		}
 	}
+	
 }
 
 // ------------------------------------------------------------------------
@@ -325,11 +333,18 @@ if ( ! function_exists('show_error'))
 */
 if ( ! function_exists('show_404'))
 {
-	function show_404($page = '', $log_error = TRUE)
-	{
-		$_error =& load_class('Exceptions', 'core');
-		$_error->show_404($page, $log_error);
-		exit;
+	if( !defined('PHPUNIT_TEST') ){
+		function show_404($page = '', $log_error = TRUE)
+		{
+			$_error =& load_class('Exceptions', 'core');
+			$_error->show_404($page, $log_error);
+			exit;
+		}
+	}else{
+		function show_404($page = '', $log_error = TRUE)
+		{
+			throw new PHPUnit_Framework_Exception($page, 404);
+		}
 	}
 }
 
