@@ -1,5 +1,5 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
-require_once(dirname(__FILE__).'/MyException.php');
+
 /**
  * CodeIgniter
  *
@@ -13,7 +13,9 @@ require_once(dirname(__FILE__).'/MyException.php');
  * @since		Version 1.0
  * @filesource
  */
-
+require_once(dirname(__FILE__).'/MyException.php');
+if( defined('PHPUNIT_TEST') )
+	require_once(dirname(__FILE__).'/Test.php');
 // ------------------------------------------------------------------------
 
 /**
