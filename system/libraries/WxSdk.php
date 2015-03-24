@@ -55,6 +55,36 @@ class CI_WxSdk{
 		);
 	}
 	
+	public function getAccessToken()
+	{
+		$qc = new WXSdk_OAuth();
+		return $qc->getAccessToken(
+			$this->option['appId'],
+			$this->option['appKey']
+		);
+	}
+
+	public function getJsApiTicket($accessToken)
+	{
+		$qc = new WXSdk_OAuth();
+		return $qc->getJsTicket(
+			$accessToken
+		);
+	}
+
+	public function getJsConfig($jsApiTicket,$url)
+	{
+		$qc = new WXSdk_Api(
+			$this->option['appId'],
+			'',
+			''
+		);
+		return $qc->getJsConfig(
+			$jsApiTicket,
+			$url
+		);
+	}
+
 	public function getUserInfo($accessToken,$openId)
 	{
 		$qc = new WXSdk_Api(

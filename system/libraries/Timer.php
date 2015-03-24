@@ -30,7 +30,7 @@ class CI_Timer{
 			}
 		}
 		//调试
-		log_message('INFO','timer tick finish');
+		log_message('DEBUG','timer tick finish');
 	}
 	
 	public function tickSingleTask($task)
@@ -40,6 +40,8 @@ class CI_Timer{
 			throw new CI_MyException(1,'unknown task path '.$taskPath);
 
 		require_once($taskPath);
+
+		log_message('INFO',$task.' finish!');
 	}
 }
 ?>
