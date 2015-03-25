@@ -48,7 +48,7 @@ class CI_Excel{
 									 ->setDescription($title)
 									 ->setKeywords($title)
 									 ->setCategory($title);
-		//设置Excel高度
+		//璁剧疆Excel楂樺害
 		$columnName = $data[0];
 		$columnIndex = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		$objPHPExcel->setActiveSheetIndex(0);
@@ -57,12 +57,12 @@ class CI_Excel{
 			$objPHPExcel->getActiveSheet()->getColumnDimension($curColumnIndex)->setWidth(40);
 		}
 		
-		//设置Excel头部
+		//璁剧疆Excel澶撮儴
 		for( $i = 0 ; $i < count($columnName) ; $i++ ){
 			$curColumnIndex = substr( $columnIndex , $i , 1 ).'1';
 			$objPHPExcel->getActiveSheet()->setCellValue($curColumnIndex,$columnName[$i]);
 		}
-		//设置Excel数据
+		//璁剧疆Excel鏁版嵁
 		for( $i = 1 ; $i < count($data) ; $i++){
 			for( $j = 0 ; $j < count($columnName) ; $j++ ){
 				$curColumnIndex = substr( $columnIndex , $j , 1 ).($i+1);
@@ -71,7 +71,7 @@ class CI_Excel{
 		}
 		//exit(0);
 		header('Content-Type: application/vnd.ms-excel');
-		header('Content-Disposition: attachment;filename="'.$title.'"');
+		header('Content-Disposition: attachment;filename="'.$title.'.xls"');
 		header('Cache-Control: max-age=0');
 
 		// If you're serving to IE over SSL, then the following may be needed
