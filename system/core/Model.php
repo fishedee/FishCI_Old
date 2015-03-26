@@ -27,6 +27,7 @@
 class CI_Model {
 
 	var $class;
+	var $attachVar;
 	/**
 	 * Constructor
 	 *
@@ -49,12 +50,30 @@ class CI_Model {
 	 */
 	function __get($key)
 	{
+		if( isset($this->attachVar[$key]) )
+			return $this->attachVar[$key];
+		
 		$CI =& get_instance();
 		if(property_exists($CI,$key) === false ){
 			log_message('error', "Has not this proerty ".$this->class->getName().'::'.$key );
 		}
 		return $CI->$key;
 	}
+
+	/**
+	 *attach name mock
+	 */
+	function attach($name,$value){
+		$this->attachVar[$name] = $value;
+	}
+
+	/**
+	 *detach name mock
+	 */
+	function detach($name){
+		unset($this->attachVar[$name]);
+	}
+
 }
 // END Model Class
 

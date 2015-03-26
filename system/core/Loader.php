@@ -302,6 +302,10 @@ class CI_Loader {
 
 			$CI->$name = new $model();
 
+			if( method_exists($CI->$name, '__initialize') ){
+				$CI->$name->__initialize();
+			}
+
 			$this->_ci_models[] = $name;
 			return;
 		}
