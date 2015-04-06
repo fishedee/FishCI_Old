@@ -46,7 +46,7 @@ class WXSdk_Api{
 			//$buff .= strtolower($k) . "=" . $v . "&";
 			$buff .= $k . "=" . $v . "&";
 		}
-		$reqPar;
+		$reqPar = "";
 		if (strlen($buff) > 0) 
 		{
 			$reqPar = substr($buff, 0, strlen($buff)-1);
