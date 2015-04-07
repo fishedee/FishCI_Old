@@ -1,7 +1,15 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+require_once(dirname(__FILE__).'/WxSdk/Base.php');
+
+require_once(dirname(__FILE__).'/WxSdk/Message.php');
+require_once(dirname(__FILE__).'/WxSdk/User.php');
+require_once(dirname(__FILE__).'/WxSdk/Menu.php');
+
 require_once(dirname(__FILE__).'/WxSdk/OAuth.php');
-require_once(dirname(__FILE__).'/WxSdk/Api.php');
+require_once(dirname(__FILE__).'/WxSdk/Js.php');
+
 require_once(dirname(__FILE__).'/WxSdk/Pay.php');
+
 class CI_WxSdk{
 	var $option;
 
@@ -10,9 +18,72 @@ class CI_WxSdk{
 		$this->CI = & get_instance();
 		$this->option = $option;
 	}
+
+	//基础接口
+	public function checkSignature(){
+		$qc = new WXSdk_Base();
+		return $qc->checkSignature($this->option['appToken']);
+	}
+
+	public function getAccessToken(){
+		$qc = new WXSdk_Base();
+		return $qc->getAccessToken(
+			$this->option['appId'],
+			$this->option['appKey']
+		);
+	}
+
+	public function getServerIp($accessToken){
+		$qc = new WXSdk_Base();
+		return $qc->getServerIp(
+			$accessToken
+		);
+	}
+
+	//用户接口
+	public function getUserDetailInfo($accessToken,$openId){
+		$qc = new WXSdk_User($accessToken);
+		return $qc->getUserInfo(
+			$openId
+		);
+	}
+
+	public function getUserList($openId=null){
+		$qc = new WXSdk_User($accessToken);
+		return $qc->getUserList(
+			$openId
+		);
+	}
+
+	//Message接口
+	public function getMessage(){
+		$qc = new WXSdk_Message();
+		return $qc->getMessage();
+	}
+
+	public function sendMessage($message){
+		$qc = new WXSdk_Message();
+		return $qc->sendMessage($message);
+	}
+
+	//Menu接口
+	public function setMenu($accessToken,$data){
+		$qc = new WXSdk_Menu($accessToken);
+		return $qc->setMenu($data);
+	}
+
+	public function getMenu($accessToken){
+		$qc = new WXSdk_Menu($accessToken);
+		return $qc->getMenu();
+	}
+
+	public function delMenu($accessToken){
+		$qc = new WXSdk_Menu($accessToken);
+		return $qc->delMenu();
+	}
 	
-	public function getLoginUrl($callback,$callbackInfo,$scope)
-	{
+	//OAuth接口
+	public function getLoginUrl($callback,$callbackInfo,$scope){
 		$qc = new WXSdk_OAuth();
 		return $qc->getRedirectUrl(
 			$this->option['appId'],
@@ -40,11 +111,7 @@ class CI_WxSdk{
 		return $qc->getState();
 	}
 
-	public function checkServerValid($token)
-	{
-		$qc = new WXSdk_OAuth();
-		return $qc->checkServerValid($token);
-	}
+	
 	
 	public function getAccessTokenAndOpenId()
 	{
@@ -55,56 +122,35 @@ class CI_WxSdk{
 		);
 	}
 	
-	public function getAccessToken()
+	public function getUserInfo($accessToken,$openId)
 	{
 		$qc = new WXSdk_OAuth();
-		return $qc->getAccessToken(
+		return $qc->getUserInfo(
 			$this->option['appId'],
-			$this->option['appKey']
+			$accessToken,
+			$openId
 		);
 	}
-
+	
+	//Js接口
 	public function getJsApiTicket($accessToken)
 	{
-		$qc = new WXSdk_OAuth();
-		return $qc->getJsTicket(
+		$qc = new WXSdk_Js($this->option['appId']);
+		return $qc->getJsApiTicket(
 			$accessToken
 		);
 	}
 
 	public function getJsConfig($jsApiTicket,$url)
 	{
-		$qc = new WXSdk_Api(
-			$this->option['appId'],
-			'',
-			''
-		);
+		$qc = new WXSdk_Js($this->option['appId']);
 		return $qc->getJsConfig(
 			$jsApiTicket,
 			$url
 		);
 	}
 
-	public function getUserInfo($accessToken,$openId)
-	{
-		$qc = new WXSdk_Api(
-			$this->option['appId'],
-			$accessToken,
-			$openId
-		);
-		return $qc->getUserInfo();
-	}
-
-	public function getUserInfoWithUnionId($accessToken,$openId)
-	{
-		$qc = new WXSdk_Api(
-			$this->option['appId'],
-			$accessToken,
-			$openId
-		);
-		return $qc->getUserInfoWithUnionId();
-	}
-
+	//支付接口
 	public function getOrderPayInfo($openId,$dealId,$dealDesc,$dealFee,$dealNotify){
 		$qc = new WXSdk_Pay(
 			$this->option['appId'],

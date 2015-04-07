@@ -17,6 +17,11 @@ class CI_Http{
 				$data = json_encode($data);
 			else
 				throw new CI_MyException(1,'不合法的data'.$data.'与dataType'.$dataType);
+		}else if( $dataType == 'json_origin'){
+			if( is_array($data))
+				$data = json_encode($data,JSON_UNESCAPED_UNICODE);
+			else
+				throw new CI_MyException(1,'不合法的data'.$data.'与dataType'.$dataType);
 		}else if( $dataType == 'plain'){
 			$data = $data;
 		}else{

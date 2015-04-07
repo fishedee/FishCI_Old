@@ -16,6 +16,7 @@
 require_once(dirname(__FILE__).'/MyException.php');
 if( defined('PHPUNIT_TEST') )
 	require_once(dirname(__FILE__).'/Test.php');
+date_default_timezone_set('Asia/Chongqing');
 // ------------------------------------------------------------------------
 
 /**
