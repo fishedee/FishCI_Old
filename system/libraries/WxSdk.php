@@ -126,7 +126,6 @@ class CI_WxSdk{
 	{
 		$qc = new WXSdk_OAuth();
 		return $qc->getUserInfo(
-			$this->option['appId'],
 			$accessToken,
 			$openId
 		);

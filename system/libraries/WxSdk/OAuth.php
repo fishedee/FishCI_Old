@@ -49,7 +49,7 @@ class WXSdk_OAuth{
             "code" => $_GET['code']
         );
 
-        return WXSdk_Util::applyApi(
+        return WXSdk_Util::applyJsonApi(
         	$this->GET_ACCESSTOKEN_AND_OPENID_URL,
         	'get',
         	$keysArr
@@ -57,7 +57,7 @@ class WXSdk_OAuth{
     }
 
     public function getUserInfo($accessToken,$openId){
-        return WXSdk_Util::applyApi(
+        return WXSdk_Util::applyJsonApi(
         	'https://api.weixin.qq.com/sns/userinfo',
         	'get',
         	array(
