@@ -243,7 +243,6 @@ class CloudsearchClient {
       $params['Timestamp'] = gmdate('Y-m-d\TH:i:s\Z');
       $params['Signature'] = $this->_sign_aliyun($params,$method);
     }
-    log_message('error',json_encode($params));
     if ($this->connect == 'curl') {
       $result = $this->_curl($url, $params, $method);
     } else {
