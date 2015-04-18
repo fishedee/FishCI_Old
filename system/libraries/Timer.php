@@ -20,7 +20,7 @@ class CI_Timer{
 		foreach( $timerTasks as $singleTimerTask ){
 			$singleTimerTaskTime = $singleTimerTask['period'];
 			$singleTimerTaskTask = $singleTimerTask['task'];
-			$singleTimerTaskTime = $singleTimerTaskTime /60;
+			$singleTimerTaskTime = ceil($singleTimerTaskTime /60);
 			if( $nowMinutes % $singleTimerTaskTime == 0 ){
 				try{
 					$this->tickSingleTask($singleTimerTaskTask);
