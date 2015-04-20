@@ -386,6 +386,7 @@ date_default_timezone_set('Asia/Chongqing');
 						$CI->db->trans_commit();
 				}
 			}catch( Exception $e ){
+				log_message('ERROR','[file:'.$e->getFile().'][line:'.$e->getLine().'][code:'.$e->getCode().'][msg:'.$e->getMessage().']');
 				$callResult = $e;
 				if( isset($docComment['trans']) )
 					$CI->db->trans_rollback();
