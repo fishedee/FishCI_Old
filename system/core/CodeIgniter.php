@@ -435,9 +435,13 @@ date_default_timezone_set('Asia/Chongqing');
  *  Close the DB connection if one exists
  * ------------------------------------------------------
  */
-	if (class_exists('CI_DB') AND isset($CI->db))
-	{
-		$CI->db->close();
+	if( !defined('PHPUNIT_TEST') ){
+
+		if (class_exists('CI_DB') AND isset($CI->db))
+		{
+			$CI->db->close();
+		}
+		
 	}
 
 
