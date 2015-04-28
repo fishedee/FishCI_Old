@@ -197,4 +197,15 @@ class WXSdk_Pay{
 	    return $jsApiObj;
 	}
 
+	/**
+	*红包接口
+	*/
+	public function sendRedPack($data){
+		$argv = array_merge(array(
+			'wxappid'=>$this->appId,
+			'client_ip'=> $_SERVER['REMOTE_ADDR']
+		),$data);
+		return $this->post('https://api.mch.weixin.qq.com/mmpaymkttransfers/sendredpack',false,$argv);
+	}
+
 }

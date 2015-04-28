@@ -198,4 +198,27 @@ class CI_WxSdk{
 		return $qc->notifyOrder();
 	}
 
+	public function sendRedPack($openId,$money,$shopName,$wishing,$actName,$remark){
+		$qc = new WXSdk_Pay(
+			$this->option['appId'],
+			$this->option['appKey'],
+			$this->option['mchId'],
+			$this->option['mchKey'],
+			$this->option['mchSslCert'],
+			$this->option['mchSslKey']
+		);
+
+		return $qc->sendRedPack(array(
+			'nick_name'=>$shopName,
+			'send_name'=>$shopName,
+			're_openid'=>$openId,
+			'total_amount'=>$money,
+			'min_value'=>$money,
+			'max_value'=>$money,
+			'wishing'=>$wishing,
+			'act_name'=>$actName,
+			'remark'=>$remark
+		));
+	}
+
 }
